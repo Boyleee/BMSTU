@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void selectionSort(int array[], int left, int right) {
+    for(int i = left; i <= right; i++) {
+        int min_index = i;
+        for(int j = i + 1; j <= right; j++) {
+            if (array[j] < array[min_index]) {
+                min_index = j;
+            }
+        }
+        int temp = array[i];
+        array[i] = array[min_index];
+        array[min_index] = temp;
+    }
+}
+
+int partition(int array[], int low, int high) {
+    int pivot = array[high];  
+    int i = (low - 1);
+
+    for (int j = low; j <= high - 1; j++) {
+        if (array[j] < pivot) {
+            i++; 
+            int temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+    }
+    int temp = array[i + 1];
+    array[i + 1] = array[high];
+    array[high] = temp;
+    return (i + 1);
+}
+
+void quickSort(int array[], int low, int high, int m) {
+    while (low < high) {
+        if (high - low < m) {
+            selectionSort(array, low, high);
+            break;
+        }
+        else {
+            int pi = partition(array, low, high);
+
+            if (pi - low < high - pi) {
+                quickSort(array, low, pi - 1, m);
+                low = pi + 1;
+            } else {
+                quickSort(array, pi + 1, high, m);
+                high = pi - 1;
+            }
+        }
+    }
+}
+
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
+    int *array = malloc(n * sizeof(int));
+
+    if (!array) {
+        printf("Memory allocation failed.\n");
+        return 1;
+    }
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &array[i]);
+    }
+
+    quickSort(array, 0, n - 1, m);
+
+    for (int i = 0; i < n; i++) {
+        printf("%d ", array[i]);
+    }
+
+    free(array);
+    return 0;
+}
